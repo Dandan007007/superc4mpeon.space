@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DTunnel - Login Funcional</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* CSS REFINADO */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        
+        body {
+            background-color: #0c0c10;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .login-box {
+            background-color: #16161e;
+            padding: 35px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 380px;
+            border: 1px solid #252530;
+            text-align: center;
+        }
+
+        .logo i { font-size: 45px; color: #00d4ff; margin-bottom: 10px; }
+        h2 { margin-bottom: 25px; font-weight: 500; letter-spacing: 1px; }
+
+        .input-group { text-align: left; margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 13px; color: #888; margin-bottom: 5px; }
+
+        .input-field {
+            background: #1f1f29;
+            border: 1px solid #333;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            transition: 0.3s;
+        }
+
+        .input-field:focus-within { border-color: #00d4ff; }
+        .input-field i { color: #00d4ff; margin-right: 12px; width: 15px; }
+        
+        .input-field input {
+            background: transparent;
+            border: none;
+            color: white;
+            outline: none;
+            width: 100%;
+            font-size: 15px;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #00d4ff, #0072ff);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-login:active { transform: scale(0.98); }
+        
+        /* Mensagem de status */
+        #status-msg { margin-top: 15px; font-size: 14px; min-height: 20px; }
+        .error { color: #ff4d4d; }
+        .success { color: #00ff88; }
+
+        .loader {
+            display: none;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #00d4ff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="login-box">
+        <div class="logo">
+            <i class="fas fa-network-wired"></i>
+            <h2>DTUNNEL PRO</h2>
+        </div>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <label>NOME DE USUÁRIO</label>
+                <div class="input-field">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="user" placeholder="Usuário SSH" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>SENHA DE ACESSO</label>
+                <div class="input-field">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="pass" placeholder="••••••••" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-login" id="btnText">CONECTAR AGORA</button>
+            <div id="status-msg"></div>
+            <div class="loader" id="loader"></div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Impede o recarregamento da página
+
+            const user = document.getElementById('user').value;
+            const pass = document.getElementById('pass').value;
+            const msg = document.getElementById('status-msg');
+            const loader = document.getElementById('loader');
+            const btnText = document.getElementById('btnText');
+
+            // Feedback visual de carregamento
+            msg.innerHTML = "";
+            btnText.style.display = "none";
+            loader.style.display = "block";
+
+            // Simulação de autenticação (Aqui você conectaria com seu banco/API)
+            setTimeout(() => {
+                loader.style.display = "none";
+                btnText.style.display = "block";
+
+                if (user === "admin" && pass === "1234") {
+                    msg.className = "success";
+                    msg.innerHTML = "Acesso autorizado! Redirecionando...";
+                    // window.location.href = "painel.html"; // Descomente para redirecionar
+                } else {
+                    msg.className = "error";
+                    msg.innerHTML = "Usuário ou senha incorretos.";
+                }
+            }, 1500); 
+        });
+    </script>
+
+</body>
+</html>
