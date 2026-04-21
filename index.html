@@ -3,155 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DTunnel - Login Funcional</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>DTunnel SSH 3D - Ultra</title>
     <style>
-        /* CSS REFINADO */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        
+        :root {
+            --neon-blue: #00f2ff;
+            --neon-purple: #bc13fe;
+            --dark-bg: #080808;
+            --glass: rgba(255, 255, 255, 0.07);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            background-color: #0c0c10;
-            height: 100vh;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--dark-bg);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 242, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(188, 19, 254, 0.05) 0%, transparent 20%);
+            color: white;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: white;
+            min-height: 100vh;
+            overflow: hidden;
         }
 
-        .login-box {
-            background-color: #16161e;
-            padding: 35px;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 380px;
-            border: 1px solid #252530;
+        .container {
+            width: 350px;
+            padding: 25px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
             text-align: center;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+            transform: perspective(1000px) rotateX(2deg);
         }
 
-        .logo i { font-size: 45px; color: #00d4ff; margin-bottom: 10px; }
-        h2 { margin-bottom: 25px; font-weight: 500; letter-spacing: 1px; }
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
 
-        .input-group { text-align: left; margin-bottom: 15px; }
-        .input-group label { display: block; font-size: 13px; color: #888; margin-bottom: 5px; }
-
-        .input-field {
-            background: #1f1f29;
-            border: 1px solid #333;
-            border-radius: 8px;
+        /* Botão de Conexão Estilo 3D */
+        .power-ring {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 30px;
+            border-radius: 50%;
             display: flex;
+            justify-content: center;
             align-items: center;
-            padding: 12px;
+            position: relative;
+            cursor: pointer;
+            transition: 0.5s;
+            border: 4px solid #222;
+        }
+
+        .power-ring.active {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 30px var(--neon-blue), inset 0 0 15px var(--neon-blue);
+        }
+
+        .power-ring i {
+            font-size: 2rem;
+            color: #444;
             transition: 0.3s;
         }
 
-        .input-field:focus-within { border-color: #00d4ff; }
-        .input-field i { color: #00d4ff; margin-right: 12px; width: 15px; }
-        
-        .input-field input {
-            background: transparent;
-            border: none;
-            color: white;
-            outline: none;
-            width: 100%;
-            font-size: 15px;
+        .power-ring.active i {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
         }
 
-        .btn-login {
-            width: 100%;
-            padding: 14px;
-            margin-top: 20px;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(90deg, #00d4ff, #0072ff);
-            color: white;
+        /* Grid de Status */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .stat-box small {
+            display: block;
+            color: #666;
+            font-size: 0.65rem;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .stat-box span {
             font-weight: bold;
+            font-size: 1rem;
+            color: #ddd;
+        }
+
+        .protocol-selector {
+            margin-top: 20px;
+            background: rgba(255,255,255,0.05);
+            padding: 10px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .protocol-opt {
+            font-size: 0.8rem;
+            color: #555;
             cursor: pointer;
-            transition: 0.2s;
+            padding: 5px 12px;
+            border-radius: 8px;
         }
 
-        .btn-login:active { transform: scale(0.98); }
-        
-        /* Mensagem de status */
-        #status-msg { margin-top: 15px; font-size: 14px; min-height: 20px; }
-        .error { color: #ff4d4d; }
-        .success { color: #00ff88; }
-
-        .loader {
-            display: none;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #00d4ff;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
+        .protocol-opt.active {
+            background: var(--neon-purple);
+            color: white;
         }
 
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .footer-info {
+            margin-top: 25px;
+            font-size: 0.7rem;
+            color: #444;
+        }
     </style>
 </head>
 <body>
 
-    <div class="login-box">
-        <div class="logo">
-            <i class="fas fa-network-wired"></i>
-            <h2>DTUNNEL PRO</h2>
+    <div class="container">
+        <div class="logo">DTUNNEL X-PRO</div>
+
+        <div class="power-ring" id="connectBtn">
+            <div id="statusText">OFF</div>
         </div>
 
-        <form id="loginForm">
-            <div class="input-group">
-                <label>NOME DE USUÁRIO</label>
-                <div class="input-field">
-                    <i class="fas fa-user"></i>
-                    <input type="text" id="user" placeholder="Usuário SSH" required>
-                </div>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <small>Protocolo</small>
+                <span id="protoDisplay">VLESS</span>
             </div>
-
-            <div class="input-group">
-                <label>SENHA DE ACESSO</label>
-                <div class="input-field">
-                    <i class="fas fa-lock"></i>
-                    <input type="password" id="pass" placeholder="••••••••" required>
-                </div>
+            <div class="stat-box">
+                <small>Latência</small>
+                <span id="pingDisplay">-- ms</span>
             </div>
+            <div class="stat-box" style="grid-column: span 2;">
+                <small>Servidor Selecionado</small>
+                <span>BR-SAO-PAULO-01</span>
+            </div>
+        </div>
 
-            <button type="submit" class="btn-login" id="btnText">CONECTAR AGORA</button>
-            <div id="status-msg"></div>
-            <div class="loader" id="loader"></div>
-        </form>
+        <div class="protocol-selector">
+            <div class="protocol-opt active" onclick="setProto('VLESS', this)">VLESS</div>
+            <div class="protocol-opt" onclick="setProto('VMESS', this)">VMESS</div>
+            <div class="protocol-opt" onclick="setProto('TROJAN', this)">TROJAN</div>
+        </div>
+
+        <div class="footer-info">v3.0.4 - Powered by Xray-Core</div>
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // Impede o recarregamento da página
+        const btn = document.getElementById('connectBtn');
+        const statusText = document.getElementById('statusText');
+        const pingDisplay = document.getElementById('pingDisplay');
+        let connected = false;
 
-            const user = document.getElementById('user').value;
-            const pass = document.getElementById('pass').value;
-            const msg = document.getElementById('status-msg');
-            const loader = document.getElementById('loader');
-            const btnText = document.getElementById('btnText');
-
-            // Feedback visual de carregamento
-            msg.innerHTML = "";
-            btnText.style.display = "none";
-            loader.style.display = "block";
-
-            // Simulação de autenticação (Aqui você conectaria com seu banco/API)
-            setTimeout(() => {
-                loader.style.display = "none";
-                btnText.style.display = "block";
-
-                if (user === "admin" && pass === "1234") {
-                    msg.className = "success";
-                    msg.innerHTML = "Acesso autorizado! Redirecionando...";
-                    // window.location.href = "painel.html"; // Descomente para redirecionar
-                } else {
-                    msg.className = "error";
-                    msg.innerHTML = "Usuário ou senha incorretos.";
-                }
-            }, 1500); 
+        btn.addEventListener('click', () => {
+            connected = !connected;
+            
+            if(connected) {
+                btn.classList.add('active');
+                statusText.innerText = "ON";
+                statusText.style.color = "var(--neon-blue)";
+                // Simula Ping
+                pingDisplay.innerText = Math.floor(Math.random() * 40 + 20) + " ms";
+            } else {
+                btn.classList.remove('active');
+                statusText.innerText = "OFF";
+                statusText.style.color = "#444";
+                pingDisplay.innerText = "-- ms";
+            }
         });
-    </script>
 
+        function setProto(name, el) {
+            document.querySelectorAll('.protocol-opt').forEach(opt => opt.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('protoDisplay').innerText = name;
+        }
+    </script>
 </body>
 </html>
+<div class="stat-box" style="grid-column: span 2; margin-top: 10px;">
+    <small>Configuração de Rede</small>
+    <select id="payloadSelect" style="background: transparent; color: var(--neon-blue); border: none; font-weight: bold; width: 100%; outline: none;">
+        <option value="v-reca">VIVO - Portal Recarga</option>
+        <option value="t-loja">TIM - Loja Oficial</option>
+        <option value="c-mclaro">CLARO - Minha Claro</option>
+    </select>
+</div>
+
