@@ -3,211 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DTunnel SSH 3D - Ultra</title>
+    <title>MasterPay - Configurações Xray</title>
     <style>
         :root {
-            --neon-blue: #00f2ff;
-            --neon-purple: #bc13fe;
-            --dark-bg: #080808;
-            --glass: rgba(255, 255, 255, 0.07);
+            --primary: #ed1c24; /* Vermelho Claro */
+            --dark: #1a1a1a;
+            --card: #2d2d2d;
+            --text: #ffffff;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: var(--dark-bg);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(0, 242, 255, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(188, 19, 254, 0.05) 0%, transparent 20%);
-            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark);
+            color: var(--text);
+            margin: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
+            padding: 20px;
         }
 
         .container {
-            width: 350px;
-            padding: 25px;
-            background: var(--glass);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 40px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .header {
             text-align: center;
-            box-shadow: 0 40px 100px rgba(0,0,0,0.8);
-            transform: perspective(1000px) rotateX(2deg);
+            margin-bottom: 30px;
         }
 
-        .logo {
-            font-size: 1.2rem;
-            font-weight: 800;
-            letter-spacing: 4px;
-            background: linear-gradient(to right, var(--neon-blue), var(--neon-purple));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .card {
+            background-color: var(--card);
+            border-radius: 15px;
+            padding: 20px;
             margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-left: 5px solid var(--primary);
         }
 
-        /* Botão de Conexão Estilo 3D */
-        .power-ring {
-            width: 140px;
-            height: 140px;
-            margin: 0 auto 30px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
+        h2 { font-size: 1.2rem; margin-top: 0; }
+        p { font-size: 0.9rem; color: #ccc; }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: 0.5s;
-            border: 4px solid #222;
-        }
-
-        .power-ring.active {
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 30px var(--neon-blue), inset 0 0 15px var(--neon-blue);
-        }
-
-        .power-ring i {
-            font-size: 2rem;
-            color: #444;
+            width: 100%;
+            font-weight: bold;
             transition: 0.3s;
         }
 
-        .power-ring.active i {
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px var(--neon-blue);
-        }
+        .btn:hover { opacity: 0.8; }
 
-        /* Grid de Status */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .stat-box {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 15px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .stat-box small {
-            display: block;
-            color: #666;
-            font-size: 0.65rem;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-        }
-
-        .stat-box span {
-            font-weight: bold;
-            font-size: 1rem;
-            color: #ddd;
-        }
-
-        .protocol-selector {
-            margin-top: 20px;
-            background: rgba(255,255,255,0.05);
+        .config-box {
+            background: #111;
             padding: 10px;
-            border-radius: 15px;
-            display: flex;
-            justify-content: space-around;
-        }
-
-        .protocol-opt {
-            font-size: 0.8rem;
-            color: #555;
-            cursor: pointer;
-            padding: 5px 12px;
-            border-radius: 8px;
-        }
-
-        .protocol-opt.active {
-            background: var(--neon-purple);
-            color: white;
-        }
-
-        .footer-info {
-            margin-top: 25px;
+            border-radius: 5px;
             font-size: 0.7rem;
-            color: #444;
+            word-break: break-all;
+            margin-bottom: 10px;
+            display: none; /* Escondido por padrão */
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <div class="logo">DTUNNEL X-PRO</div>
-
-        <div class="power-ring" id="connectBtn">
-            <div id="statusText">OFF</div>
+        <div class="header">
+            <h1>Claro Pré Vercel</h1>
+            <p>Selecione seu servidor abaixo</p>
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-box">
-                <small>Protocolo</small>
-                <span id="protoDisplay">VLESS</span>
+        <div class="card">
+            <h2>VLESS XHTTP - Monaco</h2>
+            <p>Status: <span style="color: #00ff00;">Online</span></p>
+            <div id="copyArea" class="config-box">
+                vless://4507d9f6-7c9a-4ab7-b08d-8a23asdaedwe@prezaofree.monaco.gg:443?mode=auto&path=/&security=tls&encryption=none&host=theroms-centraldacdn.vercel.app&type=xhttp&sni=prezaofree.monaco.gg#vercel
             </div>
-            <div class="stat-box">
-                <small>Latência</small>
-                <span id="pingDisplay">-- ms</span>
-            </div>
-            <div class="stat-box" style="grid-column: span 2;">
-                <small>Servidor Selecionado</small>
-                <span>BR-SAO-PAULO-01</span>
-            </div>
+            <button class="btn" onclick="copyConfig()">COPIAR CONFIG</button>
         </div>
 
-        <div class="protocol-selector">
-            <div class="protocol-opt active" onclick="setProto('VLESS', this)">VLESS</div>
-            <div class="protocol-opt" onclick="setProto('VMESS', this)">VMESS</div>
-            <div class="protocol-opt" onclick="setProto('TROJAN', this)">TROJAN</div>
+        <div style="text-align: center; margin-top: 20px;">
+            <p>Dúvidas? Acesse nosso canal:</p>
+            <a href="https://t.me/central_newss" style="color: var(--primary); text-decoration: none;">@central_newss</a>
         </div>
-
-        <div class="footer-info">v3.0.4 - Powered by Xray-Core</div>
     </div>
 
     <script>
-        const btn = document.getElementById('connectBtn');
-        const statusText = document.getElementById('statusText');
-        const pingDisplay = document.getElementById('pingDisplay');
-        let connected = false;
-
-        btn.addEventListener('click', () => {
-            connected = !connected;
-            
-            if(connected) {
-                btn.classList.add('active');
-                statusText.innerText = "ON";
-                statusText.style.color = "var(--neon-blue)";
-                // Simula Ping
-                pingDisplay.innerText = Math.floor(Math.random() * 40 + 20) + " ms";
-            } else {
-                btn.classList.remove('active');
-                statusText.innerText = "OFF";
-                statusText.style.color = "#444";
-                pingDisplay.innerText = "-- ms";
-            }
-        });
-
-        function setProto(name, el) {
-            document.querySelectorAll('.protocol-opt').forEach(opt => opt.classList.remove('active'));
-            el.classList.add('active');
-            document.getElementById('protoDisplay').innerText = name;
+        function copyConfig() {
+            const configText = document.getElementById('copyArea').innerText;
+            navigator.clipboard.writeText(configText).then(() => {
+                alert("Configuração copiada com sucesso!");
+            });
         }
     </script>
 </body>
 </html>
-<div class="stat-box" style="grid-column: span 2; margin-top: 10px;">
-    <small>Configuração de Rede</small>
-    <select id="payloadSelect" style="background: transparent; color: var(--neon-blue); border: none; font-weight: bold; width: 100%; outline: none;">
-        <option value="v-reca">VIVO - Portal Recarga</option>
-        <option value="t-loja">TIM - Loja Oficial</option>
-        <option value="c-mclaro">CLARO - Minha Claro</option>
-    </select>
-</div>
-
