@@ -2,104 +2,120 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MasterPay - Configurações Xray</title>
+    <title>Gerador JSON | Evolution Origin</title>
     <style>
-        :root {
-            --primary: #ed1c24; /* Vermelho Claro */
-            --dark: #1a1a1a;
-            --card: #2d2d2d;
-            --text: #ffffff;
-        }
-
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--dark);
-            color: var(--text);
-            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #05080a;
+            color: #ffffff;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
+            justify-content: center;
+            padding: 40px;
         }
-
-        .container {
-            max-width: 400px;
+        .main-card {
+            background: #111827;
             width: 100%;
+            max-width: 550px;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #1f2937;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .card {
-            background-color: var(--card);
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            border-left: 5px solid var(--primary);
-        }
-
-        h2 { font-size: 1.2rem; margin-top: 0; }
-        p { font-size: 0.9rem; color: #ccc; }
-
-        .btn {
-            background-color: var(--primary);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 8px;
-            cursor: pointer;
+        h2 { color: #10b981; text-align: center; margin-top: 0; }
+        .field { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-size: 14px; color: #9ca3af; }
+        input, select, textarea {
             width: 100%;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .btn:hover { opacity: 0.8; }
-
-        .config-box {
-            background: #111;
             padding: 10px;
-            border-radius: 5px;
-            font-size: 0.7rem;
-            word-break: break-all;
-            margin-bottom: 10px;
-            display: none; /* Escondido por padrão */
+            background: #0b0f1a;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            color: #fff;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #10b981;
+            border: none;
+            border-radius: 6px;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        button:hover { background: #34d399; }
+        #jsonResult {
+            margin-top: 20px;
+            background: #000;
+            color: #10b981;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
+            white-space: pre-wrap;
+            display: none;
+            border: 1px solid #10b981;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="header">
-            <h1>Claro Pré Vercel</h1>
-            <p>Selecione seu servidor abaixo</p>
-        </div>
-
-        <div class="card">
-            <h2>VLESS XHTTP - Monaco</h2>
-            <p>Status: <span style="color: #00ff00;">Online</span></p>
-            <div id="copyArea" class="config-box">
-                vless://4507d9f6-7c9a-4ab7-b08d-8a23asdaedwe@prezaofree.monaco.gg:443?mode=auto&path=/&security=tls&encryption=none&host=theroms-centraldacdn.vercel.app&type=xhttp&sni=prezaofree.monaco.gg#vercel
-            </div>
-            <button class="btn" onclick="copyConfig()">COPIAR CONFIG</button>
-        </div>
-
-        <div style="text-align: center; margin-top: 20px;">
-            <p>Dúvidas? Acesse nosso canal:</p>
-            <a href="https://t.me/central_newss" style="color: var(--primary); text-decoration: none;">@central_newss</a>
-        </div>
+<div class="main-card">
+    <h2>Evolution Origin JSON Gen</h2>
+    
+    <div class="field">
+        <label>Nome do Servidor:</label>
+        <input type="text" id="name" placeholder="Ex: BR-ORIGIN-01">
     </div>
 
-    <script>
-        function copyConfig() {
-            const configText = document.getElementById('copyArea').innerText;
-            navigator.clipboard.writeText(configText).then(() => {
-                alert("Configuração copiada com sucesso!");
-            });
-        }
-    </script>
+    <div class="field">
+        <label>IP ou Hostname:</label>
+        <input type="text" id="host" placeholder="br1.robertnet.online">
+    </div>
+
+    <div class="field">
+        <label>Porta:</label>
+        <input type="number" id="port" value="80">
+    </div>
+
+    <div class="field">
+        <label>Tipo de Conexão (Modo):</label>
+        <select id="mode">
+            <option value="ssh_direct">SSH Direct</option>
+            <option value="ssh_ssl">SSH + SSL/TLS</option>
+            <option value="v2ray_vless">V2Ray VLESS</option>
+            <option value="v2ray_vmess">V2Ray VMESS</option>
+        </select>
+    </div>
+
+    <div class="field">
+        <label>Payload / SNI:</label>
+        <textarea id="payload" rows="2" placeholder="m.facebook.com"></textarea>
+    </div>
+
+    <button onclick="gerarJSON()">GERAR CODIGO JSON</button>
+
+    <pre id="jsonResult"></pre>
+</div>
+
+<script>
+    function gerarJSON() {
+        const data = {
+            name: document.getElementById('name').value,
+            host: document.getElementById('host').value,
+            port: document.getElementById('port').value,
+            mode: document.getElementById('mode').value,
+            payload: document.getElementById('payload').value,
+            origin: "Evolution Origin",
+            timestamp: new Date().getTime()
+        };
+
+        const display = document.getElementById('jsonResult');
+        display.style.display = 'block';
+        display.textContent = JSON.stringify(data, null, 4);
+    }
+</script>
+
 </body>
 </html>
