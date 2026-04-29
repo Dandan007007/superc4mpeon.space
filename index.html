@@ -2,118 +2,123 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Gerador JSON | Evolution Origin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSH Manager v3.0</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #05080a;
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            padding: 40px;
-        }
-        .main-card {
-            background: #111827;
-            width: 100%;
-            max-width: 550px;
-            padding: 25px;
-            border-radius: 12px;
-            border: 1px solid #1f2937;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-        }
-        h2 { color: #10b981; text-align: center; margin-top: 0; }
-        .field { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-size: 14px; color: #9ca3af; }
-        input, select, textarea {
-            width: 100%;
-            padding: 10px;
-            background: #0b0f1a;
-            border: 1px solid #374151;
-            border-radius: 6px;
-            color: #fff;
-            box-sizing: border-box;
-        }
-        button {
-            width: 100%;
-            padding: 12px;
-            background: #10b981;
-            border: none;
-            border-radius: 6px;
-            color: #000;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        button:hover { background: #34d399; }
-        #jsonResult {
-            margin-top: 20px;
-            background: #000;
-            color: #10b981;
-            padding: 15px;
-            border-radius: 6px;
-            font-family: 'Consolas', monospace;
-            font-size: 13px;
-            white-space: pre-wrap;
-            display: none;
-            border: 1px solid #10b981;
-        }
+        :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f1f5f9; }
+        body { background-color: var(--bg); color: var(--text); padding-top: 30px; }
+        .card { background-color: var(--card); border: none; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); }
+        .form-control, .form-select { background-color: #334155; border: 1px solid #475569; color: #fff; }
+        .form-control:focus { background-color: #334155; border-color: var(--accent); color: #fff; box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2); }
+        .badge-cmd { cursor: pointer; transition: 0.2s; background: #475569; margin: 2px; }
+        .badge-cmd:hover { background: var(--accent); color: #000; }
+        #output { background: #000; color: #10b981; padding: 20px; border-radius: 12px; font-family: 'Fira Code', monospace; font-size: 0.9rem; overflow-x: auto; border: 1px solid #334155; }
+        .btn-primary { background-color: var(--accent); color: #000; border: none; font-weight: bold; }
+        .btn-primary:hover { background-color: #7dd3fc; }
     </style>
 </head>
 <body>
 
-<div class="main-card">
-    <h2>Evolution Origin JSON Gen</h2>
-    
-    <div class="field">
-        <label>Nome do Servidor:</label>
-        <input type="text" id="name" placeholder="Ex: BR-ORIGIN-01">
+<div class="container mb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card p-4">
+                <h3 class="mb-4 text-center">⚡ SSH Script Generator <span class="text-info">v3.0</span></h3>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Host / IP</label>
+                        <input type="text" id="host" class="form-control" placeholder="Ex: server01.meu.com">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Usuário</label>
+                        <input type="text" id="user" class="form-control" value="root">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label class="form-label">Porta</label>
+                        <input type="number" id="port" class="form-control" value="22">
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <label class="form-label">Snippets (Clique para adicionar):</label>
+                        <div class="d-flex flex-wrap">
+                            <span class="badge badge-cmd p-2" onclick="addCmd('apt update && apt upgrade -y')">🔄 Update System</span>
+                            <span class="badge badge-cmd p-2" onclick="addCmd('curl -fsSL https://get.docker.com | sh')">🐳 Install Docker</span>
+                            <span class="badge badge-cmd p-2" onclick="addCmd('ufw allow 22 && ufw enable')">🛡️ Basic Firewall</span>
+                            <span class="badge badge-cmd p-2" onclick="addCmd('apt install nginx -y')">🌐 Install Nginx</span>
+                            <span class="badge badge-cmd p-2" onclick="addCmd('reboot')">♻️ Reboot Server</span>
+                        </div>
+                    </div>
+
+                    <div class="col-12 mb-4">
+                        <label class="form-label">Script Customizado:</label>
+                        <textarea id="commands" class="form-control" rows="6" placeholder="# Digite seus comandos aqui ou use os snippets acima..."></textarea>
+                    </div>
+
+                    <div class="col-12 d-flex gap-2">
+                        <button onclick="generate()" class="btn btn-primary flex-grow-1">GERAR SCRIPT</button>
+                        <button onclick="clearAll()" class="btn btn-outline-danger">Limpar</button>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span>Terminal Output:</span>
+                        <div>
+                            <button onclick="copy()" class="btn btn-sm btn-dark text-info">Copiar</button>
+                            <button onclick="download()" class="btn btn-sm btn-dark text-warning">Salvar .sh</button>
+                        </div>
+                    </div>
+                    <pre id="output"># Aguardando geração...</pre>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <div class="field">
-        <label>IP ou Hostname:</label>
-        <input type="text" id="host" placeholder="br1.robertnet.online">
-    </div>
-
-    <div class="field">
-        <label>Porta:</label>
-        <input type="number" id="port" value="80">
-    </div>
-
-    <div class="field">
-        <label>Tipo de Conexão (Modo):</label>
-        <select id="mode">
-            <option value="ssh_direct">SSH Direct</option>
-            <option value="ssh_ssl">SSH + SSL/TLS</option>
-            <option value="v2ray_vless">V2Ray VLESS</option>
-            <option value="v2ray_vmess">V2Ray VMESS</option>
-        </select>
-    </div>
-
-    <div class="field">
-        <label>Payload / SNI:</label>
-        <textarea id="payload" rows="2" placeholder="m.facebook.com"></textarea>
-    </div>
-
-    <button onclick="gerarJSON()">GERAR CODIGO JSON</button>
-
-    <pre id="jsonResult"></pre>
 </div>
 
 <script>
-    function gerarJSON() {
-        const data = {
-            name: document.getElementById('name').value,
-            host: document.getElementById('host').value,
-            port: document.getElementById('port').value,
-            mode: document.getElementById('mode').value,
-            payload: document.getElementById('payload').value,
-            origin: "Evolution Origin",
-            timestamp: new Date().getTime()
-        };
+    function addCmd(cmd) {
+        const area = document.getElementById('commands');
+        area.value += (area.value ? '\n' : '') + cmd;
+    }
 
-        const display = document.getElementById('jsonResult');
-        display.style.display = 'block';
-        display.textContent = JSON.stringify(data, null, 4);
+    function clearAll() {
+        document.getElementById('commands').value = '';
+        document.getElementById('output').innerText = '# Aguardando geração...';
+    }
+
+    function generate() {
+        const host = document.getElementById('host').value || 'SEU_IP';
+        const user = document.getElementById('user').value || 'root';
+        const port = document.getElementById('port').value || '22';
+        const cmds = document.getElementById('commands').value;
+
+        let script = `#!/bin/bash\n\n`;
+        script += `# Gerado por SSH Manager v3.0\n`;
+        script += `echo "Conectando em ${user}@${host}..."\n\n`;
+        script += `ssh -p ${port} ${user}@${host} << 'EOF'\n`;
+        script += cmds ? cmds : "# Nenhum comando definido";
+        script += `\nEOF\n\n`;
+        script += `echo "Execução finalizada!"`;
+
+        document.getElementById('output').innerText = script;
+    }
+
+    function copy() {
+        const code = document.getElementById('output').innerText;
+        navigator.clipboard.writeText(code);
+        alert("Copiado com sucesso!");
+    }
+
+    function download() {
+        const code = document.getElementById('output').innerText;
+        const blob = new Blob([code], { type: 'text/x-sh' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'setup_server.sh';
+        a.click();
     }
 </script>
 
