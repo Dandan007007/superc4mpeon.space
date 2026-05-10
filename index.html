@@ -3,122 +3,260 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SSH Manager v3.0</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>DTunnel VIP - Painel de Gestão Global</title>
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --accent: #38bdf8; --text: #f1f5f9; }
-        body { background-color: var(--bg); color: var(--text); padding-top: 30px; }
-        .card { background-color: var(--card); border: none; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.5); }
-        .form-control, .form-select { background-color: #334155; border: 1px solid #475569; color: #fff; }
-        .form-control:focus { background-color: #334155; border-color: var(--accent); color: #fff; box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2); }
-        .badge-cmd { cursor: pointer; transition: 0.2s; background: #475569; margin: 2px; }
-        .badge-cmd:hover { background: var(--accent); color: #000; }
-        #output { background: #000; color: #10b981; padding: 20px; border-radius: 12px; font-family: 'Fira Code', monospace; font-size: 0.9rem; overflow-x: auto; border: 1px solid #334155; }
-        .btn-primary { background-color: var(--accent); color: #000; border: none; font-weight: bold; }
-        .btn-primary:hover { background-color: #7dd3fc; }
+        :root {
+            --primary: #00f2ff;
+            --secondary: #7000ff;
+            --bg: #05070a;
+            --card: #11141d;
+            --text: #ffffff;
+            --green: #00ff88;
+            --vivo: #660099;
+            --claro: #ee0000;
+            --tim: #003399;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 20px;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 1px solid #1e293b;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid #1e293b;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+        }
+
+        .card h2 {
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            background: #000;
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            padding: 12px;
+            color: var(--green);
+            font-family: 'Consolas', monospace;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+        }
+
+        .btn-copy { background: #2d3748; color: white; }
+        .btn-copy:hover { background: var(--primary); color: #000; }
+
+        .btn-buy { background: var(--green); color: #000; margin-top: 10px; }
+        .btn-wa { background: #25d366; color: white; margin-top: 10px; }
+        
+        /* Botões de Download */
+        .btn-dl { margin-bottom: 10px; color: white; }
+        .btn-vivo { background: var(--vivo); }
+        .btn-claro { background: var(--claro); }
+        .btn-tim { background: var(--tim); }
+
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--green);
+            border: 1px solid var(--green);
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background: #000;
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: #4a5568;
+            font-size: 0.8rem;
+        }
+
+        .full-width { grid-column: 1 / -1; }
     </style>
 </head>
 <body>
 
-<div class="container mb-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="card p-4">
-                <h3 class="mb-4 text-center">⚡ SSH Script Generator <span class="text-info">v3.0</span></h3>
-                
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Host / IP</label>
-                        <input type="text" id="host" class="form-control" placeholder="Ex: server01.meu.com">
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label class="form-label">Usuário</label>
-                        <input type="text" id="user" class="form-control" value="root">
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label class="form-label">Porta</label>
-                        <input type="number" id="port" class="form-control" value="22">
-                    </div>
+<div class="container">
+    <header>
+        <div class="logo">DTunnel Pro Global</div>
+        <p>Painel de Configurações Original e Vendas</p>
+    </header>
 
-                    <div class="col-12 mb-3">
-                        <label class="form-label">Snippets (Clique para adicionar):</label>
-                        <div class="d-flex flex-wrap">
-                            <span class="badge badge-cmd p-2" onclick="addCmd('apt update && apt upgrade -y')">🔄 Update System</span>
-                            <span class="badge badge-cmd p-2" onclick="addCmd('curl -fsSL https://get.docker.com | sh')">🐳 Install Docker</span>
-                            <span class="badge badge-cmd p-2" onclick="addCmd('ufw allow 22 && ufw enable')">🛡️ Basic Firewall</span>
-                            <span class="badge badge-cmd p-2" onclick="addCmd('apt install nginx -y')">🌐 Install Nginx</span>
-                            <span class="badge badge-cmd p-2" onclick="addCmd('reboot')">♻️ Reboot Server</span>
-                        </div>
-                    </div>
-
-                    <div class="col-12 mb-4">
-                        <label class="form-label">Script Customizado:</label>
-                        <textarea id="commands" class="form-control" rows="6" placeholder="# Digite seus comandos aqui ou use os snippets acima..."></textarea>
-                    </div>
-
-                    <div class="col-12 d-flex gap-2">
-                        <button onclick="generate()" class="btn btn-primary flex-grow-1">GERAR SCRIPT</button>
-                        <button onclick="clearAll()" class="btn btn-outline-danger">Limpar</button>
-                    </div>
-                </div>
-
-                <div class="mt-4">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <span>Terminal Output:</span>
-                        <div>
-                            <button onclick="copy()" class="btn btn-sm btn-dark text-info">Copiar</button>
-                            <button onclick="download()" class="btn btn-sm btn-dark text-warning">Salvar .sh</button>
-                        </div>
-                    </div>
-                    <pre id="output"># Aguardando geração...</pre>
-                </div>
+    <div class="grid">
+        
+        <div class="card full-width">
+            <div class="status">● NOVIDADE</div>
+            <h2>📦 BAIXAR CONFIGURAÇÕES PRONTAS (APP)</h2>
+            <p style="font-size: 0.8rem; color: #a0aec0; margin-bottom: 15px;">Baixe o arquivo e importe diretamente no seu app DTunnel:</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px;">
+                <button class="btn btn-dl btn-vivo" onclick="downloadConfig('VIVO_VIP.json', 'vivo')">Download VIVO</button>
+                <button class="btn btn-dl btn-claro" onclick="downloadConfig('CLARO_VIP.json', 'claro')">Download CLARO</button>
+                <button class="btn btn-dl btn-tim" onclick="downloadConfig('TIM_VIP.json', 'tim')">Download TIM</button>
             </div>
         </div>
+
+        <div class="card full-width">
+            <div class="status">● SERVIDORES ATIVOS</div>
+            <h2>📄 CONFIGURAÇÃO GLOBAL (JSON)</h2>
+            <textarea id="jsonConfig">
+{
+  "Version": "2.0",
+  "UrlUpdate": "https://seu-site.github.io/update.json",
+  "Servers": [
+    {"Name": "🇧🇷 BR-VIP-01", "Host": "br1.servidor.com", "Port": "80"},
+    {"Name": "🇧🇷 BR-VIP-02", "Host": "br2.servidor.com", "Port": "80"}
+  ],
+  "Networks": [
+    {"Name": "VIVO CLOUD", "Payload": "GET / HTTP/1.1[crlf]Host: portal.vivo.com.br[crlf]", "SNI": "portal.vivo.com.br"}
+  ]
+}</textarea>
+            <button class="btn btn-copy" onclick="copy('jsonConfig')">Copiar Configuração Completa</button>
+        </div>
+
+        <div class="card">
+            <h2>🚀 PAYLOADS ATUALIZADAS</h2>
+            <textarea id="payloadText">GET / HTTP/1.1[crlf]Host: m.claro.com.br[crlf]Connection: Keep-Alive[crlf][crlf]</textarea>
+            <button class="btn btn-copy" onclick="copy('payloadText')">Copiar Payload</button>
+        </div>
+
+        <div class="card">
+            <h2>🔑 SNI / BUG HOST</h2>
+            <textarea id="sniText">m.claro.com.br
+portal.vivo.com.br
+edge.microsoft.com</textarea>
+            <button class="btn btn-copy" onclick="copy('sniText')">Copiar SNI</button>
+        </div>
+
+        <div class="card">
+            <h2>💳 RENOVAR ACESSO</h2>
+            <input type="text" placeholder="Nome de Usuário">
+            <button class="btn btn-buy" onclick="alert('Gerando QR Code PIX...')">Gerar Pagamento PIX</button>
+            <a href="https://wa.me/5511999999999" class="btn btn-wa" target="_blank">Suporte via WhatsApp</a>
+        </div>
+
+        <div class="card">
+            <h2>📊 STATUS DO SISTEMA</h2>
+            <div style="font-size: 0.9rem;">
+                <p>Latência: <span style="color: var(--green);">25ms</span></p>
+                <p>Uptime: <span style="color: var(--green);">99.9%</span></p>
+                <p>Carga: <span style="color: orange;">Baixa</span></p>
+            </div>
+            <hr style="border: 0; border-top: 1px solid #2d3748; margin: 15px 0;">
+            <p style="font-size: 0.7rem; color: #718096;">Última atualização: hoje às 08:45</p>
+        </div>
+
     </div>
+
+    <footer>
+        &copy; 2026 DTunnel Global - Sistema de Revenda Oficial<br>
+        Criado para alta performance em redes móveis.
+    </footer>
 </div>
 
 <script>
-    function addCmd(cmd) {
-        const area = document.getElementById('commands');
-        area.value += (area.value ? '\n' : '') + cmd;
+    // Função para Copiar Texto
+    function copy(id) {
+        const area = document.getElementById(id);
+        area.select();
+        document.execCommand('copy');
+        const btn = event.target;
+        const originalText = btn.innerText;
+        btn.innerText = "✓ COPIADO!";
+        btn.style.background = "#00ff88";
+        btn.style.color = "#000";
+        setTimeout(() => {
+            btn.innerText = originalText;
+            btn.style.background = "";
+            btn.style.color = "";
+        }, 2000);
     }
 
-    function clearAll() {
-        document.getElementById('commands').value = '';
-        document.getElementById('output').innerText = '# Aguardando geração...';
-    }
+    // Função para Gerar e Baixar arquivo de Configuração
+    function downloadConfig(filename, operadora) {
+        let configData = "";
+        
+        // Dados configurados (Altere para o seu servidor real)
+        const serverIP = "br1.servidor.com"; 
 
-    function generate() {
-        const host = document.getElementById('host').value || 'SEU_IP';
-        const user = document.getElementById('user').value || 'root';
-        const port = document.getElementById('port').value || '22';
-        const cmds = document.getElementById('commands').value;
+        if(operadora === 'vivo') {
+            configData = JSON.stringify({ "name": "VIVO FREE", "server": serverIP, "payload": "GET / HTTP/1.1[crlf]Host: portal.vivo.com.br[crlf]", "port": "80", "sni": "portal.vivo.com.br" }, null, 2);
+        } else if(operadora === 'claro') {
+            configData = JSON.stringify({ "name": "CLARO FREE", "server": serverIP, "payload": "GET / HTTP/1.1[crlf]Host: m.claro.com.br[crlf]", "port": "80", "sni": "m.claro.com.br" }, null, 2);
+        } else if(operadora === 'tim') {
+            configData = JSON.stringify({ "name": "TIM FREE", "server": serverIP, "payload": "GET / HTTP/1.1[crlf]Host: m.tim.com.br[crlf]", "port": "80", "sni": "m.tim.com.br" }, null, 2);
+        }
 
-        let script = `#!/bin/bash\n\n`;
-        script += `# Gerado por SSH Manager v3.0\n`;
-        script += `echo "Conectando em ${user}@${host}..."\n\n`;
-        script += `ssh -p ${port} ${user}@${host} << 'EOF'\n`;
-        script += cmds ? cmds : "# Nenhum comando definido";
-        script += `\nEOF\n\n`;
-        script += `echo "Execução finalizada!"`;
-
-        document.getElementById('output').innerText = script;
-    }
-
-    function copy() {
-        const code = document.getElementById('output').innerText;
-        navigator.clipboard.writeText(code);
-        alert("Copiado com sucesso!");
-    }
-
-    function download() {
-        const code = document.getElementById('output').innerText;
-        const blob = new Blob([code], { type: 'text/x-sh' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'setup_server.sh';
-        a.click();
+        const element = document.createElement('a');
+        const file = new Blob([configData], {type: 'application/json'});
+        element.href = URL.createObjectURL(file);
+        element.download = filename;
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
     }
 </script>
 
